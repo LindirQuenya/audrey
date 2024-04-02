@@ -4,26 +4,25 @@ import math
 import cmath
 
 whitespace = re.compile(r'\s+', re.I | re.A)
-optionsyntax = re.compile(r'#(?:\s+([kMG]?Hz))?(?:\s+([SYZGH]))?(?:\s+(DB|MA|RI))?(?:\s+R\s+([\d\.]+))?', re.I | re.A)
+optionsyntax = re.compile(r'(?<=\s|#)(?:(?:([kMG]?Hz))|(?:([SYZGH]))|(?:(DB|MA|RI))|(?:R\s+([\d\.]+)))(?=\s|$)', re.I | re.A)
 
 def parse_options(line):
     defaultOptions = {'freq': 'GHz', 'param': 'S', 'format': 'MA', 'Z0': 50.0}
     freq_casecorr = {'GHZ': 'GHz', 'MHZ': 'MHz', 'KHZ': 'kHz', 'HZ': 'Hz'}
     options = defaultOptions.copy()
-    # For now, don't support reordering. TODO make reordering allowed.
-    match = optionsyntax.match(line)
-    if match != None and len(match.groups()) == 4:
-        m = match.groups()
-        if m[0] != None:
-            corr = freq_casecorr.get(m[0].upper())
-            options.update({'freq': corr})
-        if m[1] != None:
-            options.update({'param': m[1].upper()})
-        if m[2] != None:
-            options.update({'format': m[2].upper()})
-        if m[3] != None:
-            Z0 = float(m[3])
-            options.update({'Z0': Z0})
+    matches = optionsyntax.findall(line)
+    for m in matches:
+        if m != None and len(m) == 4:
+            if m[0] != None and m[0] != '':
+                corr = freq_casecorr.get(m[0].upper())
+                options.update({'freq': corr})
+            if m[1] != None and m[1] != '':
+                options.update({'param': m[1].upper()})
+            if m[2] != None and m[2] != '':
+                options.update({'format': m[2].upper()})
+            if m[3] != None and m[3] != '':
+                Z0 = float(m[3])
+                options.update({'Z0': Z0})
     return options
 
 # Returns (freq, [c1, c2, c3...], comment)
