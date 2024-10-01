@@ -4,7 +4,7 @@ import math
 import cmath
 
 whitespace = re.compile(r'\s+', re.I | re.A)
-optionsyntax = re.compile(r'(?<=\s|#)(?:(?:([kMG]?Hz))|(?:([SYZGH]))|(?:(DB|MA|RI))|(?:R\s+([\d\.]+)))(?=\s|$)', re.I | re.A)
+optionsyntax = re.compile(r'(?<=\s|#)(?:([kMG]?Hz)|([SYZGH])|(DB|MA|RI)|(?:R\s+([\d\.]+)))(?=\s|$)', re.I | re.A)
 
 def parse_options(line):
     defaultOptions = {'freq': 'GHz', 'param': 'S', 'format': 'MA', 'Z0': 50.0}
